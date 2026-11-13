@@ -26,3 +26,4 @@ backend/
 | `GET` | `/api/forecast` | 24-hour autoregressive predictive AQI forecast |
 | `GET` | `/api/export/excel` | Multi-sheet Microsoft Excel dataset download (`.xlsx`) |
 | `GET` | `/api/sources` | Official data citations and CPCB/WHO government portal links |
+

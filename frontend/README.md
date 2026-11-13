@@ -31,3 +31,4 @@ frontend/
 4. **Predictive 24-Hour Forecast Engine:** Forward trajectory curve with 95% confidence intervals.
 5. **Interactive Geospatial Sensor Network:** Leaflet sensor beacons with radial hazard buffers.
 6. **Lagrangian Wind Particle Canvas:** 1,500-particle fluid advection visualizer.
+
