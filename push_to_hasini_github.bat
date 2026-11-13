@@ -6,25 +6,28 @@ echo ====================================================================
 echo   Pushing to https://github.com/tellapelihasini-9993/Air-Quality-Monitoring
 echo ====================================================================
 echo.
-echo Please make sure the repository 'Air-Quality-Monitoring' is created at:
-echo    https://github.com/new
+echo Target Repository: https://github.com/tellapelihasini-9993/Air-Quality-Monitoring
 echo.
-set /p TOKEN="Enter GitHub Token (starts with ghp_ or github_pat_) or press Enter for browser login: "
+echo Press 1 to sign in with your Browser (Recommended)
+echo Press 2 to paste a GitHub Personal Access Token
+echo.
+set /p CHOICE="Choose [1 or 2, default is 1]: "
 
-if "%TOKEN%"=="" (
-    echo.
-    echo [INFO] Pushing with Git Credential Manager (browser popup will appear)...
-    git push -u origin main
-) else (
+if "%CHOICE%"=="2" (
+    set /p TOKEN="Enter GitHub Token (with 'repo' scope): "
     echo.
     echo [INFO] Pushing using Personal Access Token...
     git remote set-url origin https://tellapelihasini-9993:%TOKEN%@github.com/tellapelihasini-9993/Air-Quality-Monitoring.git
     git push -u origin main
     git remote set-url origin https://github.com/tellapelihasini-9993/Air-Quality-Monitoring.git
+) else (
+    echo.
+    echo [INFO] Opening Browser Authorization via Git Credential Manager...
+    git push -u origin main
 )
 
 echo.
 echo ====================================================================
-echo   Complete! Check https://github.com/tellapelihasini-9993/Air-Quality-Monitoring
+echo   Complete! Check: https://github.com/tellapelihasini-9993/Air-Quality-Monitoring
 echo ====================================================================
 pause
