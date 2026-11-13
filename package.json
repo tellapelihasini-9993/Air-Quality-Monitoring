@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
+    "build": "echo 'Build complete'",
     "watch": "node --watch server.js",
     "seed": "py scripts/generate_dataset.py && node scripts/generate_excel.js"
   },

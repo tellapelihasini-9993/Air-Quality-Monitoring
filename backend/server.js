@@ -12,20 +12,22 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Dynamic Directory Resolution (supports root or backend/ execution context)
+// Dynamic Directory Resolution (supports root, vercel serverless, and backend/ context)
 const FRONTEND_DIR = [
+  path.join(process.cwd(), 'frontend'),
   path.join(__dirname, '..', 'frontend'),
   path.join(__dirname, 'frontend'),
   path.join(__dirname, '..', 'public'),
   path.join(__dirname, 'public')
-].find(p => fs.existsSync(p)) || path.join(__dirname, '..', 'frontend');
+].find(p => fs.existsSync(p)) || path.join(process.cwd(), 'frontend');
 
 const DATA_DIR = [
+  path.join(process.cwd(), 'database'),
   path.join(__dirname, '..', 'database'),
   path.join(__dirname, 'database'),
   path.join(__dirname, '..', 'data'),
   path.join(__dirname, 'data')
-].find(p => fs.existsSync(p)) || path.join(__dirname, '..', 'database');
+].find(p => fs.existsSync(p)) || path.join(process.cwd(), 'database');
 
 // 1. Root route explicitly serves login page first
 app.get('/', (req, res) => {
@@ -915,21 +917,25 @@ app.use((req, res) => {
   res.sendFile(path.join(FRONTEND_DIR, 'index.html'));
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(`  Air Quality Monitoring Server running on http://localhost:${PORT}`);
-  console.log(`  Dataset: ${records.length} records across ${stations.length} stations`);
-  console.log(`====================================================`);
-});
+if (!process.env.VERCEL) {
+  const server = app.listen(PORT, () => {
+    console.log(`====================================================`);
+    console.log(`  Air Quality Monitoring Server running on http://localhost:${PORT}`);
+    console.log(`  Dataset: ${records.length} records across ${stations.length} stations`);
+    console.log(`====================================================`);
+  });
 
-server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`\n[Air Quality Monitoring ERROR] Port ${PORT} is already in use by another instance.`);
-    console.error(`To release port ${PORT}, run in PowerShell:`);
-    console.error(`   Stop-Process -Name node -Force\n`);
-    process.exit(1);
-  } else {
-    console.error('Server error:', err);
-    process.exit(1);
-  }
-});
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`\n[Air Quality Monitoring ERROR] Port ${PORT} is already in use by another instance.`);
+      console.error(`To release port ${PORT}, run in PowerShell:`);
+      console.error(`   Stop-Process -Name node -Force\n`);
+      process.exit(1);
+    } else {
+      console.error('Server error:', err);
+      process.exit(1);
+    }
+  });
+}
+
+module.exports = app;

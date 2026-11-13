@@ -3,4 +3,6 @@
  * Redirects execution to modular backend architecture at /backend/server.js
  */
 
-require('./backend/server.js');
+const app = require('./backend/server.js');
+
+module.exports = app;
