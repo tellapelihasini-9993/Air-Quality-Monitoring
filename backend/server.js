@@ -54,11 +54,26 @@ let stations = [];
 
 function loadData() {
   try {
-    if (fs.existsSync(DB_FILE)) {
-      records = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+    const dbPaths = [
+      DB_FILE,
+      path.join(process.cwd(), 'database', 'db_store.json'),
+      path.join(__dirname, '..', 'database', 'db_store.json'),
+      path.join(__dirname, 'database', 'db_store.json')
+    ];
+    const foundDb = dbPaths.find(p => fs.existsSync(p));
+    if (foundDb) {
+      records = JSON.parse(fs.readFileSync(foundDb, 'utf8'));
     }
-    if (fs.existsSync(STATIONS_FILE)) {
-      stations = JSON.parse(fs.readFileSync(STATIONS_FILE, 'utf8'));
+
+    const stnPaths = [
+      STATIONS_FILE,
+      path.join(process.cwd(), 'database', 'stations.json'),
+      path.join(__dirname, '..', 'database', 'stations.json'),
+      path.join(__dirname, 'database', 'stations.json')
+    ];
+    const foundStn = stnPaths.find(p => fs.existsSync(p));
+    if (foundStn) {
+      stations = JSON.parse(fs.readFileSync(foundStn, 'utf8'));
     }
     console.log(`Loaded ${records.length} records and ${stations.length} stations.`);
   } catch (err) {
@@ -135,6 +150,9 @@ const users = [
 
 // Helper: Filter records by timeline and focus city
 function filterRecords(city = 'all', timeline = 'full') {
+  if (records.length === 0) {
+    loadData();
+  }
   let filtered = [...records];
   
   if (city && city !== 'all' && city !== 'All Cities (Overview)') {
@@ -234,6 +252,9 @@ app.get('/api/kpi', (req, res) => {
 // 2. Stations Metadata & Leaderboard
 app.get('/api/stations', (req, res) => {
   const { sort = 'worst' } = req.query;
+  if (stations.length === 0) {
+    loadData();
+  }
   let list = [...stations];
 
   if (sort === 'worst') {
